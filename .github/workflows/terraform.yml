@@ -1,38 +1,16 @@
-name: 'Security Scan with tfsec'
-
+name: tfsec
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch:
 
 jobs:
   tfsec:
+    name: tfsec
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: '1.13.3'
-
-      - name: Install tfsec
-        run: |
-          curl -sSL https://github.com/aquasecurity/tfsec/releases/download/v1.0.0/tfsec-linux-amd64 -o /usr/local/bin/tfsec
-          chmod +x /usr/local/bin/tfsec
-
-      - name: Run tfsec Security Scan
-        run: tfsec --exit-code=1 --severity=HIGH --format=json ./infrastructure
-        continue-on-error: true
-
-      - name: Upload tfsec report
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfsec-report
-          path: tfsec-report.json
+      - name: Clone repo
+        uses: actions/checkout@master
+      - name: tfsec
+        uses: aquasecurity/tfsec-action@v1.0.0
